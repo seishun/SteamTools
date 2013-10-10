@@ -12,23 +12,22 @@ namespace SteamLanguageParser
         static void Main( string[] args )
         {
             string projectPath = Environment.GetEnvironmentVariable( "SteamRE" ) ?? args.SingleOrDefault();
+            string languagePath = args.Length > 1 ? args[1] : Path.Combine( projectPath, @"SteamResources\SteamLanguage" );
 
             if ( !Directory.Exists( projectPath ))
             {
                 throw new Exception( "Unable to find SteamRE project path, please specify the `SteamRE` environment variable" );
             }
 
-            ParseFile( projectPath, @"Resources\SteamLanguage", "steammsg.steamd", "SteamKit2", @"SteamKit2\SteamKit2\Base\Generated\", "SteamLanguage", true, new CSharpGen(), "cs" );
+            ParseFile( projectPath, languagePath, "steammsg.steamd", "SteamKit2", @"SteamKit2\SteamKit2\Base\Generated\", "SteamLanguage", true, new CSharpGen(), "cs" );
 
-            //ParseFile( projectPath, @"Resources\SteamLanguage", "steammsg.steamd", "SteamKit2", @"SteamKit2\ObjC\", "SteamLanguage", true, new ObjCInterfaceGen(), "h" );
-            //ParseFile( projectPath, @"Resources\SteamLanguage", "steammsg.steamd", "SteamKit2", @"SteamKit2\ObjC\", "SteamLanguage", true, new ObjCImplementationGen(), "m" );
+            //ParseFile( projectPath, languagePath, "steammsg.steamd", "SteamKit2", @"SteamKit2\ObjC\", "SteamLanguage", true, new ObjCInterfaceGen(), "h" );
+            //ParseFile( projectPath, languagePath, "steammsg.steamd", "SteamKit2", @"SteamKit2\ObjC\", "SteamLanguage", true, new ObjCImplementationGen(), "m" );
 
         }
 
-        private static void ParseFile(string projectPath, string path, string file, string nspace, string outputPath, string outFile, bool supportsGC, ICodeGen codeGen, string fileNameSuffix)
+        private static void ParseFile(string projectPath, string languagePath, string file, string nspace, string outputPath, string outFile, bool supportsGC, ICodeGen codeGen, string fileNameSuffix)
         {
-            string languagePath = Path.Combine( projectPath, path );
-
             Environment.CurrentDirectory = languagePath;
             Queue<Token> tokenList = LanguageParser.TokenizeString( File.ReadAllText( Path.Combine( languagePath, file ) ) );
 
